@@ -3,7 +3,7 @@
  * Hangman class. This class contains all the logic to make the
  * game run.
  *
- * @date: 11/9/13 10:18 PM
+ * @date   : 11/9/13 10:18 PM
  * @author scott
  */
 
@@ -11,11 +11,11 @@ namespace Tdlm;
 
 class Hangman
 {
-	const HANGMAN_STATUS_PLAYING 	= 'playing';
-	const HANGMAN_STATUS_LOST 		= 'lost';
-	const HANGMAN_STATUS_WON 		= 'won';
+	const HANGMAN_STATUS_PLAYING = 'playing';
+	const HANGMAN_STATUS_LOST = 'lost';
+	const HANGMAN_STATUS_WON = 'won';
 
-	const HANGMAN_TOTAL_CHANCES		= 7;
+	const HANGMAN_TOTAL_CHANCES = 7;
 
 	private $_request = array();
 
@@ -39,20 +39,18 @@ class Hangman
 
 			$this->init();
 
-		} catch (\GameRequirementException $e)
-		{
+		} catch (\GameRequirementException $e) {
 			$this->_outputGameError('requirements', $e->getMessage());
-		} catch (\Exception $e)
-		{
+		} catch (\Exception $e) {
 			$this->_outputGameError('general', $e->getMessage());
 		}
 	}
 
 	public function init()
 	{
-		if ($this->_hasRequest('reset') ||
-			$this->_checkStatus() != self::HANGMAN_STATUS_PLAYING)
-		{
+		if ($this->_hasRequest('reset')
+			|| $this->_checkStatus() != self::HANGMAN_STATUS_PLAYING
+		) {
 			$this->_resetTheGame();
 			$this->_outputGameObject();
 			return;
@@ -84,8 +82,7 @@ class Hangman
 
 		unset($_SESSION['hangman']['error']);
 
-		if ($this->_checkStatus() == self::HANGMAN_STATUS_PLAYING)
-		{
+		if ($this->_checkStatus() == self::HANGMAN_STATUS_PLAYING) {
 			unset($hangman['word']);
 		}
 
@@ -99,8 +96,7 @@ class Hangman
 	 */
 	protected function _playGame()
 	{
-		if ($this->_hasRequest('guess'))
-		{
+		if ($this->_hasRequest('guess')) {
 			$this->_guessLetter($this->_getRequest('guess'));
 
 			$this->_updateProgress();
@@ -173,10 +169,10 @@ class Hangman
 		$correctLetters = array_intersect($_SESSION['hangman']['guesses'], $_SESSION['hangman']['word']);
 		$displayWord = $this->_underscoreArray($_SESSION['hangman']['word']);
 
-		foreach($_SESSION['hangman']['word'] as $index => $letter) {
+		foreach ($_SESSION['hangman']['word'] as $index => $letter) {
 
 			if (in_array($letter, $correctLetters)) {
-				$displayWord[$index+1] = $letter;
+				$displayWord[$index + 1] = $letter;
 			}
 		}
 
@@ -213,8 +209,7 @@ class Hangman
 			throw new \GameRequirementException('Cannot retrieve dictionary word: missing dictionary');
 		}
 
-		if (class_exists('SplFileObject'))
-		{
+		if (class_exists('SplFileObject')) {
 			$dictionary = new \SplFileObject($this->_getDictionary());
 
 			// Count Lines
@@ -243,7 +238,7 @@ class Hangman
 	 */
 	protected function _underscoreArray(array $word)
 	{
-		return array_fill_keys(range(1,count($word)), '_');
+		return array_fill_keys(range(1, count($word)), '_');
 	}
 
 	/**
@@ -276,7 +271,7 @@ class Hangman
 	 * Get Request Array|String value
 	 *
 	 * @param string $key
-	 * @param null $default
+	 * @param null   $default
 	 *
 	 * @return mixed
 	 */
@@ -304,7 +299,7 @@ class Hangman
 	protected function _setDictionary($dictionary)
 	{
 		if (!file_exists($dictionary)) {
-			throw new \Exception('Unable to find text file for use as dictionary: '. $dictionary);
+			throw new \Exception('Unable to find text file for use as dictionary: ' . $dictionary);
 		}
 
 		$this->_dictionary = $dictionary;
