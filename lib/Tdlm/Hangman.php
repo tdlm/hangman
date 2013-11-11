@@ -46,6 +46,9 @@ class Hangman
 		}
 	}
 
+	/**
+	 * Init Method
+	 */
 	public function init()
 	{
 		if ($this->_hasRequest('reset')
@@ -69,6 +72,12 @@ class Hangman
 		$this->_outputGameObject();
 	}
 
+	/**
+	 * Prints JSON object with game error
+	 *
+	 * @param string $type
+	 * @param string $error
+	 */
 	protected function _outputGameError($type = 'general', $error)
 	{
 		$output = array();
@@ -80,6 +89,9 @@ class Hangman
 		exit;
 	}
 
+	/**
+	 * Returns JSON object represent current game state
+	 */
 	protected function _outputGameObject()
 	{
 		$hangman = $_SESSION['hangman'];
