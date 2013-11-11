@@ -51,8 +51,9 @@ class Hangman
 	 */
 	public function init()
 	{
-		if ($this->_hasRequest('reset')
-			|| $this->_checkStatus() != self::HANGMAN_STATUS_PLAYING
+		if ($this->_hasRequest('reset') ||
+			$this->_validateGameObject() == false ||
+			$this->_checkStatus() != self::HANGMAN_STATUS_PLAYING
 		) {
 			$this->_resetTheGame();
 			$this->_outputGameObject();
@@ -184,6 +185,27 @@ class Hangman
 	}
 
 	/**
+	 * Validate Game Object
+	 *
+	 * @return bool
+	 */
+	protected function _validateGameObject()
+	{
+		if (!isset($_SESSION['hangman']) ||
+			!isset($_SESSION['hangman']['word']) ||
+			!isset($_SESSION['hangman']['progress']) ||
+			!isset($_SESSION['hangman']['chances']) ||
+			!isset($_SESSION['hangman']['guesses']) ||
+			!isset($_SESSION['hangman']['status'])
+		)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Reset the game and store in session
 	 *
 	 * @param int $chances
@@ -216,7 +238,7 @@ class Hangman
 		if (class_exists('SplFileObject')) {
 			$dictionary = new \SplFileObject($this->_getDictionary());
 
-			// Count Lines
+			// Fast Line Count
 			$i = 0;
 			$fp = fopen($this->_getDictionary(), 'r');
 			while ($chunk = fread($fp, 1024000)) {
