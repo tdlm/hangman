@@ -58,7 +58,11 @@ class Hangman
 
 		$this->_updateProgress();
 
-		$this->_playGame();
+		if ($this->_hasRequest('guess')) {
+			$this->_guessLetter($this->_getRequest('guess'));
+
+			$this->_updateProgress();
+		}
 
 		$this->_checkStatus();
 
@@ -89,18 +93,6 @@ class Hangman
 		print json_encode($hangman);
 
 		exit;
-	}
-
-	/**
-	 * Main Game Play Method
-	 */
-	protected function _playGame()
-	{
-		if ($this->_hasRequest('guess')) {
-			$this->_guessLetter($this->_getRequest('guess'));
-
-			$this->_updateProgress();
-		}
 	}
 
 	/**
