@@ -51,9 +51,9 @@ class Hangman
 	 */
 	public function init()
 	{
-		if ($this->_hasRequest('reset') ||
-			$this->_validateGameObject() == false ||
-			$this->_checkStatus() != self::HANGMAN_STATUS_PLAYING
+		if ($this->_hasRequest('reset')
+			|| $this->_validateGameObject() == false
+			|| $this->_checkStatus() != self::HANGMAN_STATUS_PLAYING
 		) {
 			$this->_resetTheGame();
 			$this->_outputGameObject();
@@ -191,14 +191,13 @@ class Hangman
 	 */
 	protected function _validateGameObject()
 	{
-		if (!isset($_SESSION['hangman']) ||
-			!isset($_SESSION['hangman']['word']) ||
-			!isset($_SESSION['hangman']['progress']) ||
-			!isset($_SESSION['hangman']['chances']) ||
-			!isset($_SESSION['hangman']['guesses']) ||
-			!isset($_SESSION['hangman']['status'])
-		)
-		{
+		if (!isset($_SESSION['hangman'])
+			|| !isset($_SESSION['hangman']['word'])
+			|| !isset($_SESSION['hangman']['progress'])
+			|| !isset($_SESSION['hangman']['chances'])
+			|| !isset($_SESSION['hangman']['guesses'])
+			|| !isset($_SESSION['hangman']['status'])
+		) {
 			return false;
 		}
 
