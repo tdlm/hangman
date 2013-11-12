@@ -25,32 +25,32 @@
 
 	<div id="wordbar"></div>
 	<div id="letters">
-		<button>A</button>
-		<button>B</button>
-		<button>C</button>
-		<button>D</button>
-		<button>E</button>
-		<button>F</button>
-		<button>G</button>
-		<button>H</button>
-		<button>I</button>
-		<button>J</button>
-		<button>K</button>
-		<button>L</button>
-		<button>M</button>
-		<button>N</button>
-		<button>O</button>
-		<button>P</button>
-		<button>Q</button>
-		<button>R</button>
-		<button>S</button>
-		<button>T</button>
-		<button>U</button>
-		<button>V</button>
-		<button>W</button>
-		<button>X</button>
-		<button>Y</button>
-		<button>Z</button>
+		<button data-value="a">A</button>
+		<button data-value="b">B</button>
+		<button data-value="c">C</button>
+		<button data-value="d">D</button>
+		<button data-value="e">E</button>
+		<button data-value="f">F</button>
+		<button data-value="g">G</button>
+		<button data-value="h">H</button>
+		<button data-value="i">I</button>
+		<button data-value="j">J</button>
+		<button data-value="k">K</button>
+		<button data-value="l">L</button>
+		<button data-value="m">M</button>
+		<button data-value="n">N</button>
+		<button data-value="o">O</button>
+		<button data-value="p">P</button>
+		<button data-value="q">Q</button>
+		<button data-value="r">R</button>
+		<button data-value="s">S</button>
+		<button data-value="t">T</button>
+		<button data-value="u">U</button>
+		<button data-value="v">V</button>
+		<button data-value="w">W</button>
+		<button data-value="x">X</button>
+		<button data-value="y">Y</button>
+		<button data-value="z">Z</button>
 	</div>
 </div>
 <style type="text/css">
@@ -246,10 +246,45 @@
 		font-size: 18px;
 		margin: 4px 0;
 	}
+
+	#letters button.used {
+		background: #eee;
+	}
 </style>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script type="text/javascript">
 	$(function () {
+
+		var updateHangman = function(data) {
+			var obj = $.parseJSON(data);
+
+			if (obj.wrong == 0) {
+				$('#hangman').removeClass();
+				$('#letters button').each(function() {
+					$(this).removeClass();
+				});
+			}
+
+			// Update hangman
+			$('#hangman').addClass('step'+obj.wrong);
+
+			// Update Wordbar
+			var wordbar = '';
+
+			$.each(obj.progress, function (key, val) {
+				wordbar += val;
+			});
+
+			// Update buttons
+			$.each(obj.guesses, function (key, val) {
+				var button = $('#letters').find('[data-value="'+val+'"]');
+
+				$(button).prop('disabled', true);
+				$(button).addClass('used');
+			});
+
+			$('#wordbar').html(wordbar);
+		};
 
 		$('#letters button').click(function() {
 
@@ -259,26 +294,7 @@
 				url: "/ajax/hangman.php",
 				type: "POST",
 				data: { guess: buttonVal }
-			}).done(function (data) {
-					var obj = $.parseJSON(data);
-
-					if (obj.wrong == 0) {
-						$('#hangman').removeClass();
-					}
-
-					// Update hangman
-					$('#hangman').addClass('step'+obj.wrong);
-
-					// Update Wordbar
-					var wordbar = '';
-
-					$.each(obj.progress, function (key, val) {
-						wordbar += val;
-					});
-
-					$('#wordbar').html(wordbar);
-
-				});
+			}).done(updateHangman);
 
 		});
 
@@ -288,26 +304,7 @@
 					url: "/ajax/hangman.php",
 					type: "POST",
 					data: { guess: String.fromCharCode(e.which) }
-				}).done(function (data) {
-						var obj = $.parseJSON(data);
-
-						if (obj.wrong == 0) {
-							$('#hangman').removeClass();
-						}
-
-						// Update hangman
-						$('#hangman').addClass('step'+obj.wrong);
-
-						// Update Wordbar
-						var wordbar = '';
-
-						$.each(obj.progress, function (key, val) {
-							wordbar += val;
-						});
-
-						$('#wordbar').html(wordbar);
-
-					});
+				}).done(updateHangman);
 			}
 		});
 
@@ -315,21 +312,7 @@
 			url: "/ajax/hangman.php",
 			type: "POST",
 			data: {}
-		}).done(function (data) {
-				var obj = $.parseJSON(data);
-
-				// Update hangman
-				$('#hangman').addClass('step'+obj.wrong);
-
-				// Update Wordbar
-				var wordbar = '';
-
-				$.each(obj.progress, function (key, val) {
-					wordbar += val;
-				});
-
-				$('#wordbar').html(wordbar);
-			});
+		}).done(updateHangman);
 	});
 </script>
 </body>
