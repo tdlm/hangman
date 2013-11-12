@@ -52,6 +52,22 @@
 		<button data-value="y">Y</button>
 		<button data-value="z">Z</button>
 	</div>
+
+	<div id="winbox">
+		You are a winner. The word was: <span class="finalword"></span><br />
+
+		<button class="game-reset">Play Again</button><br />
+
+		(Press button or press any letter key to play again)
+	</div>
+
+	<div id="losebox">
+		You have lost. The word was: <span class="finalword"></span><br />
+
+		<button class="game-reset">Play Again</button><br />
+
+		(Press button or press any letter key to play again)
+	</div>
 </div>
 <style type="text/css">
 	#page {
@@ -250,6 +266,20 @@
 	#letters button.used {
 		background: #eee;
 	}
+
+	#winbox {
+		display: none;
+		margin: 0 auto;
+		width: 300px;
+		text-align: center;
+	}
+
+	#losebox {
+		display: none;
+		margin: 0 auto;
+		width: 300px;
+		text-align: center;
+	}
 </style>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script type="text/javascript">
@@ -263,6 +293,40 @@
 				$('#letters button').each(function() {
 					$(this).removeClass();
 				});
+				$('#winbox').hide();
+				$('#losebox').hide();
+				$('#letters').show();
+				$('#wordbar').show();
+			}
+
+			if (obj.wrong == obj.chances || obj.status == 'lost') {
+				$('#letters').hide();
+				$('#wordbar').hide();
+
+				var word = '';
+
+				$.each(obj.word, function (key, val) {
+					word += val;
+				});
+
+				$('.finalword').html(word);
+
+				$('#losebox').show();
+			}
+
+			if (obj.status == 'won') {
+				$('#letters').hide();
+				$('#wordbar').hide();
+
+				var word = '';
+
+				$.each(obj.word, function (key, val) {
+					word += val;
+				});
+
+				$('.finalword').html(word);
+
+				$('#winbox').show();
 			}
 
 			// Update hangman
@@ -286,9 +350,17 @@
 			$('#wordbar').html(wordbar);
 		};
 
+		$('.game-reset').click(function() {
+			$.ajax({
+				url: "/ajax/hangman.php",
+				type: "POST",
+				data: { }
+			}).done(updateHangman);
+		});
+
 		$('#letters button').click(function() {
 
-			buttonVal = $(this).text().toLowerCase();
+			buttonVal = $(this).data('value').toLowerCase();
 
 			$.ajax({
 				url: "/ajax/hangman.php",
