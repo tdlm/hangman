@@ -25,6 +25,32 @@
 
 	<div id="wordbar"></div>
 	<div id="letters">
+		<button>A</button>
+		<button>B</button>
+		<button>C</button>
+		<button>D</button>
+		<button>E</button>
+		<button>F</button>
+		<button>G</button>
+		<button>H</button>
+		<button>I</button>
+		<button>J</button>
+		<button>K</button>
+		<button>L</button>
+		<button>M</button>
+		<button>N</button>
+		<button>O</button>
+		<button>P</button>
+		<button>Q</button>
+		<button>R</button>
+		<button>S</button>
+		<button>T</button>
+		<button>U</button>
+		<button>V</button>
+		<button>W</button>
+		<button>X</button>
+		<button>Y</button>
+		<button>Z</button>
 	</div>
 </div>
 <style type="text/css">
@@ -202,11 +228,60 @@
 		margin: 0 auto;
 		width: 300px;
 		text-align: center;
+		font-size: 22px;
+	}
+
+	#letters {
+		margin: 25px auto 0;
+		width: 400px;
+	}
+
+	#letters button {
+		display: inline-block;
+		width: 26px;
+		height: 26px;
+		background: #3586ff;
+		color: #fff;
+		text-align: center;
+		font-size: 18px;
+		margin: 4px 0;
 	}
 </style>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script type="text/javascript">
 	$(function () {
+
+		$('#letters button').click(function() {
+
+			buttonVal = $(this).text().toLowerCase();
+
+			$.ajax({
+				url: "/ajax/hangman.php",
+				type: "POST",
+				data: { guess: buttonVal }
+			}).done(function (data) {
+					var obj = $.parseJSON(data);
+
+					if (obj.wrong == 0) {
+						$('#hangman').removeClass();
+					}
+
+					// Update hangman
+					$('#hangman').addClass('step'+obj.wrong);
+
+					// Update Wordbar
+					var wordbar = '';
+
+					$.each(obj.progress, function (key, val) {
+						wordbar += val;
+					});
+
+					$('#wordbar').html(wordbar);
+
+				});
+
+		});
+
 		$(document).keypress(function (e) {
 			if ((e.which >= 65 && e.which <= 90) || (e.which >= 97 && e.which <= 122)) {
 				$.ajax({
