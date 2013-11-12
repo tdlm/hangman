@@ -172,6 +172,7 @@ class Hangman
 	protected function _updateProgress()
 	{
 		$correctLetters = array_intersect($_SESSION['hangman']['guesses'], $_SESSION['hangman']['word']);
+		$wrongGuesses = array_diff($_SESSION['hangman']['guesses'], $_SESSION['hangman']['word']);
 		$displayWord = $this->_underscoreArray($_SESSION['hangman']['word']);
 
 		foreach ($_SESSION['hangman']['word'] as $index => $letter) {
@@ -181,6 +182,7 @@ class Hangman
 			}
 		}
 
+		$_SESSION['hangman']['wrong'] = count($wrongGuesses);
 		$_SESSION['hangman']['progress'] = $displayWord;
 	}
 
@@ -197,6 +199,7 @@ class Hangman
 			|| !isset($_SESSION['hangman']['chances'])
 			|| !isset($_SESSION['hangman']['guesses'])
 			|| !isset($_SESSION['hangman']['status'])
+			|| !isset($_SESSION['hangman']['wrong'])
 		) {
 			return false;
 		}
@@ -216,6 +219,7 @@ class Hangman
 		$_SESSION['hangman']['progress'] = $this->_underscoreArray($_SESSION['hangman']['word']);
 		$_SESSION['hangman']['chances'] = is_null($chances) ? self::HANGMAN_TOTAL_CHANCES : $chances;
 		$_SESSION['hangman']['guesses'] = array();
+		$_SESSION['hangman']['wrong'] = 0;
 		$_SESSION['hangman']['status'] = self::HANGMAN_STATUS_PLAYING;
 	}
 
